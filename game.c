@@ -3,8 +3,19 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <time.h>
+/*for bg sound*/
+#include <mmsystem.h>
+
+/*to remove flicker*/
+void clear_screen_fast() {
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos = {0, 0};
+    SetConsoleCursorPosition(h, pos);
+}
 
 int main() {
+	system("color 4F");
+	PlaySound(TEXT("bg.wav"), NULL, SND_ASYNC | SND_LOOP);
     srand(time(0));
 
     int x = 1;              // player position (0 to 2)
@@ -25,7 +36,8 @@ int main() {
         }
 
         // ---- DRAW ----
-        system("cls");
+		// system("cls");
+		clear_screen_fast();
         printf("|--- --- ---|\n");
 
         for (int i = 0; i < 10; i++) {
@@ -47,14 +59,17 @@ int main() {
 
         // ---- PLAYER ----
         if (x == 0)
-            printf("| %c        |\n", 6);
+            printf("| %c         |\n", 6);
         else if (x == 1)
-            printf("|     %c    |\n", 6);
+            printf("|     %c     |\n", 6);
         else if (x == 2)
-            printf("|        %c |\n", 6);
+            printf("|        %c  |\n", 6);
 
         // ---- COLLISION ----
         if (step == 10 && x == obstaclePos) {
+        	PlaySound(NULL, NULL, 0);  // stop background
+			PlaySound(TEXT("impact.wav"), NULL, SND_ASYNC);
+        	Sleep(2500);
             printf("\nGAME OVER!\n");
             break;
         }
